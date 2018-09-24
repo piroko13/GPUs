@@ -1,4 +1,11 @@
 <?php
+session_start();
+error_reporting( E_ALL );
+ini_set( "display_errors", 1 );
+include "autentificacion.php";
+if (isset($_SESSION["usuario_valido"]) && !$_SESSION["usuario_valido"]) {
+  header('Location: index.php');
+}
 $servername = "localhost";
 $username = "GPUs";
 $password = "Gpus1234";
@@ -27,7 +34,7 @@ VALUES
 '".$_GET["Marca_idMarca"]."')";
 
 if ($conn->query($sql) === TRUE) {
-    echo "New record created successfully";
+    header('Location: dashboard.php');
 } else {
     echo "Error: " . $sql . "<br>" . $conn->error;
 }
