@@ -9,7 +9,7 @@ if (isset($_SESSION["usuario_valido"]) && !$_SESSION["usuario_valido"]) {
 $servername = "localhost";
 $username = "GPUs";
 $password = "Gpus1234";
-$dbname = "mydb";
+$dbname = "GPUs";
 
 // Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
@@ -18,7 +18,7 @@ $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
    die("Connection failed: " . $conn->connect_error);
 }
-$sql = "INSERT INTO `mydb`.`Tarjetas_de_Video`
+$sql = "INSERT INTO `GPUs`.`Tarjetas_de_Video`
 (`Modelo`,
 `Procesador_grafico`,
 `Numero_ventiladores`,
@@ -28,8 +28,8 @@ $sql = "INSERT INTO `mydb`.`Tarjetas_de_Video`
 VALUES
 ('".$_GET["Modelo"]."',
 '".$_GET["Procesador_grafico"]."',
-".$_GET["Numero_ventiladores"].",
-".$_GET["Cores"].",
+'".$_GET["Numero_ventiladores"]."',
+'".$_GET["Cores"]."',
 '".$_GET["Tipo_memoria"]."',
 '".$_GET["Marca_idMarca"]."')";
 

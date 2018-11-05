@@ -3,7 +3,7 @@ function conexion (){
   $servername = "localhost";
   $username = "GPUs";
   $password = "Gpus1234";
-  $dbname = "mydb";
+  $dbname = "GPUs";
 
   // Create connection
   $conn = new mysqli($servername, $username, $password, $dbname);
@@ -22,7 +22,7 @@ function validacion_Usuario (string $correo, string $password){
   $sql = "SELECT `usuarios`.`idusuarios`,
     `usuarios`.`correo`,
     `usuarios`.`password`
-FROM `mydb`.`usuarios`
+FROM `GPUs`.`usuarios`
 WHERE `usuarios`.`correo` = '".$correo."' AND `usuarios`.`password` = '".md5($password)."';";
 $conn->query($sql);
 $result = $conn->query($sql);
@@ -38,7 +38,7 @@ else {
 }
 function consulta (){
   $conn = conexion();
-  $sql = "SELECT * FROM mydb.Tarjetas_de_Video LEFT JOIN mydb.Marca ON mydb.Tarjetas_de_Video.Marca_idMarca = mydb.Marca.idMarca;";
+  $sql = "SELECT * FROM .Tarjetas_de_Video LEFT JOIN GPUs.Marca ON GPUs.Tarjetas_de_Video.Marca_idMarca = GPUs.Marca.idMarca;";
 $conn->query($sql);
 $result = $conn->query($sql);
 desconexion($conn);
@@ -51,5 +51,13 @@ function exportar (){
     $row_data = array($fila["id_Tarjetas_de_Video"],$fila["Modelo"],$fila["Procesador_grafico"],$fila["Numero_ventiladores"],$fila["Cores"],$fila["Tipo_memoria"],$fila["nombre_marca"]);
     array_push($data, $row_data);
   } return $data;
+}
+function graficar (){
+  $conn = conexion();
+  $sql = "SELECT `Tarjetas_de_Video`.`Numero_ventiladores`, count(id_Tarjetas_de_Video) as total FROM `GPUs`.`Tarjetas_de_Video` group by Tarjetas_de_Video.Numero_ventiladores;";
+$conn->query($sql);
+$result = $conn->query($sql);
+desconexion($conn);
+return $result;
 }
 ?>

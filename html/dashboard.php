@@ -7,6 +7,7 @@ if (isset($_SESSION["usuario_valido"]) && !$_SESSION["usuario_valido"]) {
   header('Location: index.php');
 }
 $consulta = consulta();
+$graficar = graficar();
 
 ?>
 <html lang="en">
@@ -15,6 +16,13 @@ $consulta = consulta();
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-3d.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
 
     <title>Dashboard</title>
 
@@ -26,6 +34,7 @@ $consulta = consulta();
     <div class="btn-group" role="group" aria-label="Basic example">
       <a href="alta.php" class="btn btn-success">Añadir Registro</a>
       <a href="exportar.php" class="btn btn-info">Exportar en CSV</a>
+      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ImportarCSV">Importar CSV</button>
     </div>
     <table class="table">
   <thead class="thead-dark">
@@ -55,25 +64,71 @@ $consulta = consulta();
         echo "</tr>";
       }
     ?>
-    <!--<tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Larry</td>
-      <td>the Bird</td>
-      <td>@twitter</td>
-    </tr>-->
   </tbody>
 </table>
+
+<div id="container" style="height: 400px"></div>
+
+<div id="ImportarCSV" class="modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Archivo a Importar</h5>
+      </div>
+      <div class="modal-body">
+        <form id="importarForm" action='importar.php' method='POST' enctype='multipart/form-data'>
+		  <div class="form-group">
+			<input type="file" name="file" class="form-control-file" id="exampleFormControlFile1">
+		  </div>
+		</form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button id="importar" type="button" class="btn btn-primary">Importar</button>
+      </div>
+    </div>
+  </div>
+</div>
   </body>
+  <script>
+	$("#importar").click(function(){$("#importarForm").submit()});
+  Highcharts.chart('container', {
+    chart: {
+      type: 'pie',
+      options3d: {
+        enabled: true,
+        alpha: 45,
+        beta: 0
+      }
+    },
+    title: {
+      text: 'Total de Ventiladores por GPU'
+    },
+    tooltip: {
+      pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    plotOptions: {
+      pie: {
+        allowPointSelect: true,
+        cursor: 'pointer',
+        depth: 35,
+        dataLabels: {
+          enabled: true,
+          format: '{point.name}'
+        }
+      }
+    },
+    series: [{
+      type: 'pie',
+      name: 'Número de ventiladores',
+      data: [
+        <?php
+          while ($fila = $graficar->fetch_assoc()) {
+            echo "['".$fila["Numero_ventiladores"]."', ".$fila["total"]."],";
+          }
+        ?>
+      ]
+    }]
+  });
+</script>
 </html>
